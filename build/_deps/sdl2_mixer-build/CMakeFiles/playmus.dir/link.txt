@@ -1,0 +1,1 @@
+/usr/bin/cc -Wl,--dependency-file,CMakeFiles/playmus.dir/link.d CMakeFiles/playmus.dir/playmus.c.o -o playmus  libSDL2_mixer.a ../sdl2-build/libSDL2main.a ../sdl2-build/libSDL2.a -lm -lrt -pthread

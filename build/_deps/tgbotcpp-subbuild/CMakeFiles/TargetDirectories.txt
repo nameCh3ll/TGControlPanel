@@ -1,0 +1,3 @@
+/home/name_chell/TGControlPanel/build/_deps/tgbotcpp-subbuild/CMakeFiles/tgbotcpp-populate.dir
+/home/name_chell/TGControlPanel/build/_deps/tgbotcpp-subbuild/CMakeFiles/edit_cache.dir
+/home/name_chell/TGControlPanel/build/_deps/tgbotcpp-subbuild/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,88 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"build/_deps/tgbotcpp-src/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 106,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 111,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 112,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"_deps/tgbotcpp-build/libTgBot.a"
+			],
+			"targetId" : "TgBot::@0bf4f56ac22dcbfb70ca",
+			"targetIndex" : 5,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				{
+					"from" : "build/_deps/tgbotcpp-src/include",
+					"to" : "."
+				}
+			],
+			"type" : "directory"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/TgBot",
+			"exportName" : "TgBot-targets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "TgBot::@0bf4f56ac22dcbfb70ca",
+					"index" : 5
+				}
+			],
+			"paths" : 
+			[
+				"_deps/tgbotcpp-build/CMakeFiles/Export/b1cc4fcaa0b31c85fabc6e3d25a16490/TgBotConfig.cmake"
+			],
+			"type" : "export"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "_deps/tgbotcpp-build",
+		"source" : "build/_deps/tgbotcpp-src"
+	}
+}
