@@ -1,3 +1,0 @@
-/home/name_chell/TGControlPanel/build/_deps/sdl2_mixer-subbuild/CMakeFiles/sdl2_mixer-populate.dir
-/home/name_chell/TGControlPanel/build/_deps/sdl2_mixer-subbuild/CMakeFiles/edit_cache.dir
-/home/name_chell/TGControlPanel/build/_deps/sdl2_mixer-subbuild/CMakeFiles/rebuild_cache.dir

@@ -1,1 +1,0 @@
-/usr/bin/cc -Wl,--dependency-file,CMakeFiles/playwave.dir/link.d CMakeFiles/playwave.dir/playwave.c.o -o playwave  libSDL2_mixer.a ../sdl2-build/libSDL2main.a ../sdl2-build/libSDL2.a -lm -lrt -pthread

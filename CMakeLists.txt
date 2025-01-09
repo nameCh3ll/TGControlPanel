@@ -1,50 +1,61 @@
-cmake_minimum_required(VERSION 3.11)
-project(TGControlPanel VERSION 1.0)
+cmake_minimum_required(VERSION 3.26)
+
+project(TgControlPanel VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(FETCHCONTENT_QUIET OFF)
-set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
-set(FETCHCONTENT_CLONE_TIMEOUT 500)  # Увеличьте таймаут до 300 секунд
-include(FetchContent)
 
-FetchContent_Declare(
-    TgBotCpp
-    GIT_REPOSITORY https://github.com/reo7sp/tgbot-cpp.git
-    GIT_TAG master
-)
-FetchContent_MakeAvailable(TgBotCpp)
+set(TgControlPanel_include_dir "${CMAKE_SOURCE_DIR}/include")
 
-FetchContent_Declare(
-    SDL2
-    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-    GIT_TAG release-2.26.5
-)
-FetchContent_MakeAvailable(SDL2)
+set(SDL2_include_dir "${CMAKE_SOURCE_DIR}/libs/SDL2/include")
+set(SDL2_lib_dir "${CMAKE_SOURCE_DIR}/libs/SDL2/lib/libSDL2.a")
 
-FetchContent_Declare(
-    SDL2_mixer
-    GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
-    GIT_TAG release-2.6.3
-)
-FetchContent_MakeAvailable(SDL2_mixer)
+set(SDL2mixer_include_dir "${CMAKE_SOURCE_DIR}/libs/SDL2mixer/include")
+set(SDL2mixer_lib_dir "${CMAKE_SOURCE_DIR}/libs/SDL2mixer/lib/libSDL2_mixer.a")
 
-find_package(Boost REQUIRED)
-find_package(OpenSSL REQUIRED)
+set(TgBot_include_dir "${CMAKE_SOURCE_DIR}/libs/TgBot/include")
+set(TgBot_lib_dir "${CMAKE_SOURCE_DIR}/libs/TgBot/lib/libTgBot.a")
 
-add_executable(TGControlPanel src/TGControlPanel.cpp)
+# Поиск Boost (укажите компоненты, которые вы используете)
+find_package(Boost REQUIRED COMPONENTS system thread)
 
-target_include_directories(TGControlPanel PUBLIC 
-    ${tgbot_INCLUDE_DIRS} 
-    ${sdl2_SOURCE_DIR}/include 
-    ${sdl2_mixer_SOURCE_DIR}/include
+if(NOT Boost_FOUND)
+    message(FATAL_ERROR "Boost не найден!")
+endif()
+
+# Укажите исходные файлы
+set(SOURCE_FILES
+    src/TGControlPanel.cpp
+    src/button_function.cpp
 )
 
-target_link_libraries(TGControlPanel PUBLIC 
-    TgBot
-    Boost::boost 
-    OpenSSL::SSL 
-    OpenSSL::Crypto 
-    SDL2 
-    SDL2_mixer
+# Укажите директории с заголовочными файлами
+include_directories(
+    ${SDL2_include_dir}
+    ${SDL2mixer_include_dir}
+    ${TgBot_include_dir}
+    ${Boost_INCLUDE_DIRS}
+    ${TgControlPanel_include_dir}
+)
+
+# Добавляем исполняемый файл
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
+# Указываем линковку со статическими библиотеками
+target_link_libraries(${PROJECT_NAME}
+    ${SDL2_lib_dir}
+    ${SDL2mixer_lib_dir}
+    ${TgBot_lib_dir}
+    Boost::system
+    Boost::thread
+    ssl # Добавляем OpenSSL
+    crypto # Добавляем библиотеку для работы с криптографией
+    pthread # Для многопоточности, если требуется
+)
+
+# Добавляем путь к библиотекам для статической линковки
+target_link_directories(${PROJECT_NAME} PRIVATE
+    "${CMAKE_SOURCE_DIR}/libs/SDL2/lib"
+    "${CMAKE_SOURCE_DIR}/libs/SDL2mixer/lib"
+    "${CMAKE_SOURCE_DIR}/libs/TgBot/lib"
 )

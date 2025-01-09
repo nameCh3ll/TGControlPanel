@@ -85,51 +85,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\" \"devel\" \"library\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/usr/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/usr/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/name_chell/TGControlPanel/build/CMakeFiles /home/name_chell/TGControlPanel/build//CMakeFiles/progress.marks
@@ -162,141 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named TGControlPanel
+# Target rules for targets named TgControlPanel
 
 # Build rule for target.
-TGControlPanel: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 TGControlPanel
-.PHONY : TGControlPanel
+TgControlPanel: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 TgControlPanel
+.PHONY : TgControlPanel
 
 # fast build rule for target.
-TGControlPanel/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TGControlPanel.dir/build.make CMakeFiles/TGControlPanel.dir/build
-.PHONY : TGControlPanel/fast
-
-#=============================================================================
-# Target rules for targets named TgBot
-
-# Build rule for target.
-TgBot: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 TgBot
-.PHONY : TgBot
-
-# fast build rule for target.
-TgBot/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/tgbotcpp-build/CMakeFiles/TgBot.dir/build.make _deps/tgbotcpp-build/CMakeFiles/TgBot.dir/build
-.PHONY : TgBot/fast
-
-#=============================================================================
-# Target rules for targets named sdl_headers_copy
-
-# Build rule for target.
-sdl_headers_copy: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sdl_headers_copy
-.PHONY : sdl_headers_copy
-
-# fast build rule for target.
-sdl_headers_copy/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sdl2-build/CMakeFiles/sdl_headers_copy.dir/build.make _deps/sdl2-build/CMakeFiles/sdl_headers_copy.dir/build
-.PHONY : sdl_headers_copy/fast
-
-#=============================================================================
-# Target rules for targets named SDL2main
-
-# Build rule for target.
-SDL2main: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SDL2main
-.PHONY : SDL2main
-
-# fast build rule for target.
-SDL2main/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sdl2-build/CMakeFiles/SDL2main.dir/build.make _deps/sdl2-build/CMakeFiles/SDL2main.dir/build
-.PHONY : SDL2main/fast
-
-#=============================================================================
-# Target rules for targets named SDL2-static
-
-# Build rule for target.
-SDL2-static: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SDL2-static
-.PHONY : SDL2-static
-
-# fast build rule for target.
-SDL2-static/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sdl2-build/CMakeFiles/SDL2-static.dir/build.make _deps/sdl2-build/CMakeFiles/SDL2-static.dir/build
-.PHONY : SDL2-static/fast
-
-#=============================================================================
-# Target rules for targets named SDL2_test
-
-# Build rule for target.
-SDL2_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SDL2_test
-.PHONY : SDL2_test
-
-# fast build rule for target.
-SDL2_test/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sdl2-build/CMakeFiles/SDL2_test.dir/build.make _deps/sdl2-build/CMakeFiles/SDL2_test.dir/build
-.PHONY : SDL2_test/fast
-
-#=============================================================================
-# Target rules for targets named uninstall
-
-# Build rule for target.
-uninstall: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 uninstall
-.PHONY : uninstall
-
-# fast build rule for target.
-uninstall/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sdl2-build/CMakeFiles/uninstall.dir/build.make _deps/sdl2-build/CMakeFiles/uninstall.dir/build
-.PHONY : uninstall/fast
-
-#=============================================================================
-# Target rules for targets named SDL2_mixer
-
-# Build rule for target.
-SDL2_mixer: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SDL2_mixer
-.PHONY : SDL2_mixer
-
-# fast build rule for target.
-SDL2_mixer/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sdl2_mixer-build/CMakeFiles/SDL2_mixer.dir/build.make _deps/sdl2_mixer-build/CMakeFiles/SDL2_mixer.dir/build
-.PHONY : SDL2_mixer/fast
-
-#=============================================================================
-# Target rules for targets named playmus
-
-# Build rule for target.
-playmus: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 playmus
-.PHONY : playmus
-
-# fast build rule for target.
-playmus/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sdl2_mixer-build/CMakeFiles/playmus.dir/build.make _deps/sdl2_mixer-build/CMakeFiles/playmus.dir/build
-.PHONY : playmus/fast
-
-#=============================================================================
-# Target rules for targets named playwave
-
-# Build rule for target.
-playwave: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 playwave
-.PHONY : playwave
-
-# fast build rule for target.
-playwave/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sdl2_mixer-build/CMakeFiles/playwave.dir/build.make _deps/sdl2_mixer-build/CMakeFiles/playwave.dir/build
-.PHONY : playwave/fast
+TgControlPanel/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TgControlPanel.dir/build.make CMakeFiles/TgControlPanel.dir/build
+.PHONY : TgControlPanel/fast
 
 src/TGControlPanel.o: src/TGControlPanel.cpp.o
 .PHONY : src/TGControlPanel.o
 
 # target to build an object file
 src/TGControlPanel.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TGControlPanel.dir/build.make CMakeFiles/TGControlPanel.dir/src/TGControlPanel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TgControlPanel.dir/build.make CMakeFiles/TgControlPanel.dir/src/TGControlPanel.cpp.o
 .PHONY : src/TGControlPanel.cpp.o
 
 src/TGControlPanel.i: src/TGControlPanel.cpp.i
@@ -304,7 +142,7 @@ src/TGControlPanel.i: src/TGControlPanel.cpp.i
 
 # target to preprocess a source file
 src/TGControlPanel.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TGControlPanel.dir/build.make CMakeFiles/TGControlPanel.dir/src/TGControlPanel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TgControlPanel.dir/build.make CMakeFiles/TgControlPanel.dir/src/TGControlPanel.cpp.i
 .PHONY : src/TGControlPanel.cpp.i
 
 src/TGControlPanel.s: src/TGControlPanel.cpp.s
@@ -312,8 +150,32 @@ src/TGControlPanel.s: src/TGControlPanel.cpp.s
 
 # target to generate assembly for a file
 src/TGControlPanel.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TGControlPanel.dir/build.make CMakeFiles/TGControlPanel.dir/src/TGControlPanel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TgControlPanel.dir/build.make CMakeFiles/TgControlPanel.dir/src/TGControlPanel.cpp.s
 .PHONY : src/TGControlPanel.cpp.s
+
+src/button_function.o: src/button_function.cpp.o
+.PHONY : src/button_function.o
+
+# target to build an object file
+src/button_function.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TgControlPanel.dir/build.make CMakeFiles/TgControlPanel.dir/src/button_function.cpp.o
+.PHONY : src/button_function.cpp.o
+
+src/button_function.i: src/button_function.cpp.i
+.PHONY : src/button_function.i
+
+# target to preprocess a source file
+src/button_function.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TgControlPanel.dir/build.make CMakeFiles/TgControlPanel.dir/src/button_function.cpp.i
+.PHONY : src/button_function.cpp.i
+
+src/button_function.s: src/button_function.cpp.s
+.PHONY : src/button_function.s
+
+# target to generate assembly for a file
+src/button_function.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TgControlPanel.dir/build.make CMakeFiles/TgControlPanel.dir/src/button_function.cpp.s
+.PHONY : src/button_function.cpp.s
 
 # Help Target
 help:
@@ -322,24 +184,14 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... install"
-	@echo "... install/local"
-	@echo "... install/strip"
-	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... sdl_headers_copy"
-	@echo "... uninstall"
-	@echo "... SDL2-static"
-	@echo "... SDL2_mixer"
-	@echo "... SDL2_test"
-	@echo "... SDL2main"
-	@echo "... TGControlPanel"
-	@echo "... TgBot"
-	@echo "... playmus"
-	@echo "... playwave"
+	@echo "... TgControlPanel"
 	@echo "... src/TGControlPanel.o"
 	@echo "... src/TGControlPanel.i"
 	@echo "... src/TGControlPanel.s"
+	@echo "... src/button_function.o"
+	@echo "... src/button_function.i"
+	@echo "... src/button_function.s"
 .PHONY : help
 
 
