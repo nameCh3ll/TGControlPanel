@@ -1,3 +1,0 @@
-/home/name_chell/TGControlPanel/build/CMakeFiles/TgControlPanel.dir
-/home/name_chell/TGControlPanel/build/CMakeFiles/edit_cache.dir
-/home/name_chell/TGControlPanel/build/CMakeFiles/rebuild_cache.dir
