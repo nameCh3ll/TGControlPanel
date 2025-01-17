@@ -37,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: linux-binary
-          path: build/your_binary
+          path: build/TGControlPanel
