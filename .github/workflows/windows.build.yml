@@ -34,7 +34,7 @@ jobs:
         cmake --build build --config Release  
 
     - name: Upload exe as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: MyProjectExe
         path: build/MyProject.exe  
