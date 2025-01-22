@@ -1,37 +1,40 @@
-name: Build for Windows
+name: Build with MinGW on Windows
 
 on:
   push:
     branches:
-      - main
+      - main  
 
 jobs:
-  build-windows:
-    name: Build for Windows
-    runs-on: windows-latest
+  build:
+    runs-on: windows-latest  
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2  
 
-      - name: Set up MinGW
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
+    - name: Install MinGW
+      run: |
+        choco install mingw  
 
-      - name: Install dependencies
-        run: |
-          ./vcpkg install sdl2:x64-windows
-          ./vcpkg install sdl2-mixer:x64-windows
-          ./vcpkg install tgbot-cpp:x64-windows
+    - name: Install CMake
+      run: |
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'  
 
-      - name: Build the project
-        run: |
-          cmake -Bbuild -S.
-          cmake --build build --config Release
+    - name: Verify MinGW Installation
+      run: |
+        gcc --version  
 
-      - name: Upload Windows artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows-binary
-          path: build/TGControlPanel.exe
+    - name: Configure CMake project
+      run: |
+        cmake -G "MinGW Makefiles" -B build -S .  
+
+    - name: Build project
+      run: |
+        cmake --build build --config Release  
+
+    - name: Upload exe as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: MyProjectExe
+        path: build/MyProject.exe  
