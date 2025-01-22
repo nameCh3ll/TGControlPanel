@@ -1,0 +1,40 @@
+name: Build for Linux
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-linux:
+    name: Build for Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y cmake g++ libsdl2-dev libsdl2-mixer-dev
+
+      - name: Clone and build TgBotCpp
+        run: |
+          git clone https://github.com/reo7sp/tgbot-cpp.git
+          cd tgbot-cpp
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --config Release
+          sudo make install
+
+      - name: Build the project
+        run: |
+          cmake -Bbuild -S.
+          cmake --build build --config Release
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-binary
+          path: build/TGControlPanel
