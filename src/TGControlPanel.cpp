@@ -1,8 +1,8 @@
-#include "../include/button_function.h"
+#include "../includes/sources/button_function.h"
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-
+  
   if (SDL_Init(SDL_INIT_AUDIO) < 0) {
     cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError();
     return 1;
@@ -52,14 +52,12 @@ int main(int argc, char *argv[]) {
     bot.getApi().sendMessage(message->chat->id, spoilerText, 0, 0, nullptr,
                              "MarkdownV2");
     bot.getApi().sendMessage(message->chat->id,
-                             "__We have on the menu__:", nullptr, nullptr,
+                             "__We have on the menu__:",0, 0,
                              keyboard, "MarkdownV2");
   });
 
   bot.getEvents().onNonCommandMessage([](TgBot::Message::Ptr message) {
     download_mp3(std::move(message->text));
-    /*std::string systemcall =*/
-    /*    "curl --output /home/name_chell/pult/tmp.mp3 " + message->text;*/
   });
 
   bot.getEvents().onCallbackQuery([](CallbackQuery::Ptr query) {

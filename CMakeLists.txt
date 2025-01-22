@@ -1,61 +1,45 @@
 cmake_minimum_required(VERSION 3.26)
 
-project(TgControlPanel VERSION 1.0.0)
+project(TGControlPanel VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(SRC_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/includes/sources")
+# set(BUILD_SHARED_LIBS
+#     OFF
+#     CACHE BOOL "Build static libraries instead of shared libraries" FORCE)
 
-set(TgControlPanel_include_dir "${CMAKE_SOURCE_DIR}/include")
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  message(STATUS "Building for Windows")
+  # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mconsole")
+  set(LIBRARY_DIR "${PROJECT_SOURCE_DIR}/libs/lib")
+  set(LIB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/includes/libraries/include")
 
-set(SDL2_include_dir "${CMAKE_SOURCE_DIR}/libs/SDL2/include")
-set(SDL2_lib_dir "${CMAKE_SOURCE_DIR}/libs/SDL2/lib/libSDL2.a")
+elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+  message(STATUS "Building for Linux")
 
-set(SDL2mixer_include_dir "${CMAKE_SOURCE_DIR}/libs/SDL2mixer/include")
-set(SDL2mixer_lib_dir "${CMAKE_SOURCE_DIR}/libs/SDL2mixer/lib/libSDL2_mixer.a")
+  set(LIBRARY_DIR "${PROJECT_SOURCE_DIR}/libs/x64linux")
+  set(LIB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/includes/libraries/linux")
+else()
+  message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}.")
 
-set(TgBot_include_dir "${CMAKE_SOURCE_DIR}/libs/TgBot/include")
-set(TgBot_lib_dir "${CMAKE_SOURCE_DIR}/libs/TgBot/lib/libTgBot.a")
-
-# Поиск Boost (укажите компоненты, которые вы используете)
-find_package(Boost REQUIRED COMPONENTS system thread)
-
-if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Boost не найден!")
 endif()
+# set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32)
+# set(LIBRARIES
+#     ${LIBRARY_DIR}/libssl.a # version 3.4.0
+#     ${LIBRARY_DIR}/libcrypto.a # version 3.4.0
+#     ${LIBRARY_DIR}/libSDL2.a # version 2.31.0
+#     ${LIBRARY_DIR}/libSDL2_mixer.a # version 2.8.0
+#     ${LIBRARY_DIR}/libboost_system.a # version 1.86.0
+#     ${LIBRARY_DIR}/libboost_thread.a # version 1.86.0
+#     ${LIBRARY_DIR}/libTgBot.a # version 1.8
+#     ${LIBRARY_DIR}/libwavpack.a)
+# link_directories(/usr/x86_64-w64-mingw32/lib)
+file(GLOB LIBRARIES "${LIBRARY_DIR}/*.a")
+include_directories(${LIB_INCLUDE_DIR} ${SRC_INCLUDE_DIR})
 
-# Укажите исходные файлы
-set(SOURCE_FILES
-    src/TGControlPanel.cpp
-    src/button_function.cpp
-)
-
-# Укажите директории с заголовочными файлами
-include_directories(
-    ${SDL2_include_dir}
-    ${SDL2mixer_include_dir}
-    ${TgBot_include_dir}
-    ${Boost_INCLUDE_DIRS}
-    ${TgControlPanel_include_dir}
-)
-
-# Добавляем исполняемый файл
+file(GLOB SOURCE_FILES src/*.cpp)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-# Указываем линковку со статическими библиотеками
-target_link_libraries(${PROJECT_NAME}
-    ${SDL2_lib_dir}
-    ${SDL2mixer_lib_dir}
-    ${TgBot_lib_dir}
-    Boost::system
-    Boost::thread
-    ssl # Добавляем OpenSSL
-    crypto # Добавляем библиотеку для работы с криптографией
-    pthread # Для многопоточности, если требуется
-)
-
-# Добавляем путь к библиотекам для статической линковки
-target_link_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_SOURCE_DIR}/libs/SDL2/lib"
-    "${CMAKE_SOURCE_DIR}/libs/SDL2mixer/lib"
-    "${CMAKE_SOURCE_DIR}/libs/TgBot/lib"
-)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
+# message(STATUS "Found libraries: ${LIBRARIES}")

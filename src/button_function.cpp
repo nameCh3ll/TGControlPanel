@@ -1,4 +1,5 @@
-#include "../include/button_function.h"
+#include "../includes/sources/button_function.h"
+#include <cstddef>
 #include <cstdio>
 #include <iostream>
 
@@ -61,7 +62,7 @@ void download_mp3(std::string &&url) {
     http::response<http::dynamic_body> res;
     http::read(stream, buffer, res);
 
-    std::ofstream output_file("../sound/tmp.mp3", std::ios::binary);
+    std::ofstream output_file("./sound/tmp.mp3", std::ios::binary);
     output_file << beast::buffers_to_string(res.body().data());
     output_file.close();
 
@@ -83,26 +84,22 @@ void download_mp3(std::string &&url) {
 
 void shutdown_laptop(Bot &bot, CallbackQuery::Ptr &query) {
 
-  string response = "Введите пароль";
-  bot.getApi().sendMessage(query->message->chat->id, response, nullptr, nullptr,
-                           nullptr, "MarkdownV2");
   system("shutdown -h now");
 }
 
 void upload_sound(Bot &bot, CallbackQuery::Ptr &query) {
 
-  bot.getApi().sendMessage(query->message->chat->id, "I'm waiting for the link",
-                           nullptr, nullptr, nullptr, "MarkdownV2");
+  /*bot.getApi().sendMessage(query->message->chat->id, "I'm waiting for the link",*/
+  /*                         nullptr, std::nullptr_t, nullptr, "MarkdownV2");*/
 }
 
 void play_sound(Bot &bot, CallbackQuery::Ptr &query) {
-  Mix_Music *music =
-      Mix_LoadMUS("/home/name_chell/TGControlPanel/sound/tmp.mp3");
+  Mix_Music *music = Mix_LoadMUS("../sound/tmp.mp3");
   if (music == nullptr) {
     cerr << "Failed to load MP3 file! SDL_mixer Error: " << Mix_GetError();
 
-    bot.getApi().sendMessage(query->message->chat->id, "couldn't do it",
-                             nullptr, nullptr, nullptr, "MarkdownV2");
+    /*bot.getApi().sendMessage(query->message->chat->id, "couldn't do it",*/
+    /*                         nullptr, nullptr, nullptr, "MarkdownV2");*/
     return;
   }
   Mix_PlayMusic(music, 1);
@@ -111,6 +108,6 @@ void play_sound(Bot &bot, CallbackQuery::Ptr &query) {
   }
   Mix_FreeMusic(music);
   cout << "Play sound:" << query->from->username << '\n';
-  bot.getApi().sendMessage(query->message->chat->id, "`Mischief manage`",
-                           nullptr, nullptr, nullptr, "MarkdownV2");
+  /*bot.getApi().sendMessage(query->message->chat->id, "`Mischief manage`",*/
+  /*                         nullptr, nullptr, nullptr, "MarkdownV2");*/
 }
