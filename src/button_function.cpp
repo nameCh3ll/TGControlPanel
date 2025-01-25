@@ -1,7 +1,4 @@
 #include "../includes/sources/button_function.h"
-#include <cstddef>
-#include <cstdio>
-#include <iostream>
 
 void parse_url(string &&url, string &domain, string &path) {
   const string protocol_delimiter = "://";
@@ -30,7 +27,6 @@ void parse_url(string &&url, string &domain, string &path) {
 // Функция для загрузки HTML-страницы
 void download_mp3(std::string &&url) {
   try {
-
     string host = "";
     string path = "";
     const string port = "443";
@@ -62,16 +58,20 @@ void download_mp3(std::string &&url) {
     http::response<http::dynamic_body> res;
     http::read(stream, buffer, res);
 
-    std::ofstream output_file("./sound/tmp.mp3", std::ios::binary);
-    output_file << beast::buffers_to_string(res.body().data());
+    if (res.result() != http::status::ok) {
+      throw std::runtime_error("HTTP Error: " +
+                               std::to_string(res.result_int()));
+    }
+
+    std::ofstream output_file("./tmp.mp3", std::ios::binary);
+    output_file << boost::beast::buffers_to_string(res.body().data());
     output_file.close();
 
-    std::cout << "MP3 файл успешно загружен: downloaded.mp3" << std::endl;
+    std::cout << "MP3 файл успешно загружен: tmp.mp3" << std::endl;
 
-    // Закрытие соединения
     beast::error_code ec;
     stream.shutdown(ec);
-    if (ec == net::error::eof) {
+    if (ec == net::error::eof || ec == ssl::error::stream_truncated) {
       ec = {}; // EOF - это нормально
     }
     if (ec) {
@@ -89,17 +89,17 @@ void shutdown_laptop(Bot &bot, CallbackQuery::Ptr &query) {
 
 void upload_sound(Bot &bot, CallbackQuery::Ptr &query) {
 
-  /*bot.getApi().sendMessage(query->message->chat->id, "I'm waiting for the link",*/
-  /*                         nullptr, std::nullptr_t, nullptr, "MarkdownV2");*/
+  bot.getApi().sendMessage(query->message->chat->id, "I'm waiting for the link",
+                           0, 0, 0, "MarkdownV2");
 }
 
 void play_sound(Bot &bot, CallbackQuery::Ptr &query) {
-  Mix_Music *music = Mix_LoadMUS("../sound/tmp.mp3");
+  Mix_Music *music = Mix_LoadMUS("./tmp.mp3");
   if (music == nullptr) {
     cerr << "Failed to load MP3 file! SDL_mixer Error: " << Mix_GetError();
 
-    /*bot.getApi().sendMessage(query->message->chat->id, "couldn't do it",*/
-    /*                         nullptr, nullptr, nullptr, "MarkdownV2");*/
+    bot.getApi().sendMessage(query->message->chat->id, "couldn't do it", 0, 0,
+                             0, "MarkdownV2");
     return;
   }
   Mix_PlayMusic(music, 1);
@@ -108,6 +108,6 @@ void play_sound(Bot &bot, CallbackQuery::Ptr &query) {
   }
   Mix_FreeMusic(music);
   cout << "Play sound:" << query->from->username << '\n';
-  /*bot.getApi().sendMessage(query->message->chat->id, "`Mischief manage`",*/
-  /*                         nullptr, nullptr, nullptr, "MarkdownV2");*/
+  bot.getApi().sendMessage(query->message->chat->id, "`Mischief manage`", 0, 0,
+                           0, "MarkdownV2");
 }

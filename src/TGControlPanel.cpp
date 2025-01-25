@@ -1,9 +1,12 @@
 #include "../includes/sources/button_function.h"
-#include <iostream>
 
 int main(int argc, char *argv[]) {
-  
-  if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+
+#ifdef _WIN32
+  HWND hwnd = GetConsoleWindow();
+  ShowWindow
+#endif
+      if (SDL_Init(SDL_INIT_AUDIO) < 0) {
     cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError();
     return 1;
   }
@@ -51,9 +54,8 @@ int main(int argc, char *argv[]) {
     std::string spoilerText = "_Hi_ ||*" + message->from->firstName + "*||";
     bot.getApi().sendMessage(message->chat->id, spoilerText, 0, 0, nullptr,
                              "MarkdownV2");
-    bot.getApi().sendMessage(message->chat->id,
-                             "__We have on the menu__:",0, 0,
-                             keyboard, "MarkdownV2");
+    bot.getApi().sendMessage(message->chat->id, "__We have on the menu__:", 0,
+                             0, keyboard, "MarkdownV2");
   });
 
   bot.getEvents().onNonCommandMessage([](TgBot::Message::Ptr message) {

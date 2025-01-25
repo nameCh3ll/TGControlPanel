@@ -1,4 +1,8 @@
 #pragma once
+
+#define SDL_MAIN_HANDLED
+
+#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <boost/asio/ssl/error.hpp>
@@ -14,7 +18,6 @@
 #include <exception>
 #include <functional>
 #include <string>
-/*#include <sys/socket.h>*/
 #include <tgbot/tgbot.h>
 #include <unordered_map>
 #include <utility>
