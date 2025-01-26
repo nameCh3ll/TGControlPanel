@@ -1,4 +1,4 @@
-#include "../includes/sources/button_function.h"
+#include "button_function.h"
 
 void parse_url(string &&url, string &domain, string &path) {
   const string protocol_delimiter = "://";

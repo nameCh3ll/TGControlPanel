@@ -1,12 +1,13 @@
-#include "../includes/sources/button_function.h"
+#include "button_function.h"
 
 int main(int argc, char *argv[]) {
-
+  
 #ifdef _WIN32
   HWND hwnd = GetConsoleWindow();
-  ShowWindow
+  ShowWindow(hwnd, SW_HIDE); // Скрыть окно консоли на Windows
 #endif
-      if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+
+  if (SDL_Init(SDL_INIT_AUDIO) < 0) {
     cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError();
     return 1;
   }
