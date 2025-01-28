@@ -1,18 +1,37 @@
 #include "button_function.h"
+#include <functional>
+
+using namespace TgBot;
+using namespace std;
 
 int main(int argc, char *argv[]) {
-  
+
+  signal(SIGINT, signalHandler);
+
 #ifdef _WIN32
   HWND hwnd = GetConsoleWindow();
-  ShowWindow(hwnd, SW_HIDE); // Скрыть окно консоли на Windows
+  ShowWindow(hwnd, SW_HIDE);
 #endif
 
+  cout << "Markers: (II) informational, (WW) warning, (EE) error, (NI) not "
+          "implemented\n\n";
+
+  if (argc < 2) {
+    cerr << "(EE) Enter your Telegram API token\n";
+    return 1;
+  } else if (argc > 2) {
+    cerr << "(EE) Number of arguments is exceeded\n";
+    return 1;
+  } else if (argc == 2) {
+    isTokenValid(argv[1]);
+  }
+
   if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-    cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError();
+    cerr << "SDL could not initialize!\nSDL_Error: " << SDL_GetError();
     return 1;
   }
   if (Mix_Init(MIX_INIT_MP3) == 0) {
-    cerr << "SDL_mixer could not initialize! SDL_mixer Error: "
+    cerr << "SDL_mixer could not initialize!\nSDL_mixer Error: "
          << Mix_GetError();
     SDL_Quit();
     return 1;
@@ -24,13 +43,14 @@ int main(int argc, char *argv[]) {
     SDL_Quit();
     return 1;
   }
-
-  static Bot bot(std::move("7768261581:AAGIOc_LhHV_yap2ytJiq45QwJRVCPyDTf8"));
+  const string TELEGRAM_API_TOKEN =
+      "7768261581:AAEOBImqZAUC9gNSucUVNYVy6sSCjYHh_vY";
+  static Bot bot(TELEGRAM_API_TOKEN);
   static unordered_map<string, function<void(Bot &, CallbackQuery::Ptr &)>>
       callbackData_funck{
-          {"shutdownButton", shutdown_laptop},
-          {"soundButton", play_sound},
-          {"uploadButton", upload_sound},
+          {"shutdownButton", shutdownLaptop},
+          {"soundButton", playSound},
+          {"uploadButton", uploadSound},
       };
   static InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
   InlineKeyboardButton::Ptr shutdownButton(new InlineKeyboardButton);
@@ -60,22 +80,18 @@ int main(int argc, char *argv[]) {
   });
 
   bot.getEvents().onNonCommandMessage([](TgBot::Message::Ptr message) {
-    download_mp3(std::move(message->text));
+    downloadMp3(std::move(message->text));
   });
 
   bot.getEvents().onCallbackQuery([](CallbackQuery::Ptr query) {
     callbackData_funck[query->data](bot, query);
   });
 
-  signal(SIGINT, [](int s) {
-    printf("SIGINT got\n");
-    exit(0);
-  });
   try {
     bot.getApi().deleteWebhook();
 
     TgLongPoll longPoll(bot);
-    printf("Long poll started\n");
+    cout << "--- Bot started ---\n";
     while (true) {
       longPoll.start();
     }

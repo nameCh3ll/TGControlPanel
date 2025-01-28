@@ -1,36 +1,17 @@
 #include "button_function.h"
 
-void parse_url(string &&url, string &domain, string &path) {
-  const string protocol_delimiter = "://";
-  const string path_delimiter = "/";
+namespace beast = boost::beast; // Boost.Beast namespace
+namespace http = beast::http;   // HTTP namespace
+namespace net = boost::asio;    // Boost.Asio namespace
+namespace ssl = net::ssl;       // SSL namespace
+using tcp = net::ip::tcp;       // TCP namespace
 
-  // Найти начало домена после протокола
-  auto protocol_end = url.find(protocol_delimiter);
-  if (protocol_end == std::string::npos) {
-    throw std::invalid_argument("URL не содержит протокол.");
-  }
-  protocol_end += protocol_delimiter.length();
-
-  // Найти начало пути
-  auto path_start = url.find(path_delimiter, protocol_end);
-  if (path_start == std::string::npos) {
-    // Если путь отсутствует, берем только домен
-    domain = url.substr(protocol_end);
-    path = "/";
-  } else {
-    // Разделить домен и путь
-    domain = url.substr(protocol_end, path_start - protocol_end);
-    path = url.substr(path_start);
-  }
-}
-
-// Функция для загрузки HTML-страницы
-void download_mp3(std::string &&url) {
+void downloadMp3(std::string &&url) {
   try {
     string host = "";
     string path = "";
     const string port = "443";
-    parse_url(std::move(url), host, path);
+    parseUrl(std::move(url), host, path);
 
     net::io_context ioc;
     ssl::context ctx(ssl::context::tlsv12_client);
@@ -82,32 +63,34 @@ void download_mp3(std::string &&url) {
   }
 }
 
-void shutdown_laptop(Bot &bot, CallbackQuery::Ptr &query) {
+void shutdownLaptop(Bot &bot, CallbackQuery::Ptr &query) {
 
   system("shutdown -h now");
 }
 
-void upload_sound(Bot &bot, CallbackQuery::Ptr &query) {
-
+void uploadSound(Bot &bot, CallbackQuery::Ptr &query) {
+  // TODO:async
   bot.getApi().sendMessage(query->message->chat->id, "I'm waiting for the link",
                            0, 0, 0, "MarkdownV2");
 }
 
-void play_sound(Bot &bot, CallbackQuery::Ptr &query) {
+void playSound(Bot &bot, CallbackQuery::Ptr &query) {
   Mix_Music *music = Mix_LoadMUS("./tmp.mp3");
   if (music == nullptr) {
-    cerr << "Failed to load MP3 file! SDL_mixer Error: " << Mix_GetError();
+    std::cerr << "Failed to load MP3 file! SDL_mixer Error: " << Mix_GetError();
 
     bot.getApi().sendMessage(query->message->chat->id, "couldn't do it", 0, 0,
                              0, "MarkdownV2");
     return;
   }
   Mix_PlayMusic(music, 1);
+
   while (Mix_PlayingMusic()) {
     SDL_Delay(100);
   }
+
   Mix_FreeMusic(music);
-  cout << "Play sound:" << query->from->username << '\n';
+  std::cout << "Play sound:" << query->from->username << '\n';
   bot.getApi().sendMessage(query->message->chat->id, "`Mischief manage`", 0, 0,
                            0, "MarkdownV2");
 }
