@@ -4,51 +4,39 @@ project(TGControlPanel VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(SRC_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/includes/sources")
-set(BUILD_SHARED_LIBS
-    OFF
-    CACHE BOOL "Build static libraries instead of shared
-libraries" FORCE)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+set(SRC_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/includes/sources")
+
+set(LIB_DIR "${PROJECT_SOURCE_DIR}/libs/x64${CMAKE_SYSTEM_NAME}")
+set(LIB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/includes/libraries/${CMAKE_SYSTEM_NAME}")
+
+option(BUILD_SHARED_LIBS "Build shared libraries instead of static ones" OFF)
+
+if(WIN32)
   message(STATUS "Building for Windows")
 
-  set(LIBRARY_DIR "${PROJECT_SOURCE_DIR}/libs/x64windows")
-  set(LIB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/includes/libraries/windows")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mconsole")
-  set(SYSTEM_LIBRARIES
-      wavpack
-      advapi32
-      vorbisfile
-      vorbis
-      ogg
-      mingw32
-      pthread
-      crypto
-      setupapi
-      imm32
-      mpg123
-      winmm
-      version
-      ws2_32
-      crypt32
-      user32
-      kernel32
+  set(SYSTEM_LIB
+      wavpack advapi32 gdi32 vorbisfile vorbis ogg mingw32
+      pthread crypto setupapi imm32 mpg123 winmm
+      version ws2_32 crypt32 user32 kernel32
   )
-elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+elseif(UNIX)
   message(STATUS "Building for Linux")
 
-  set(LIBRARY_DIR "${PROJECT_SOURCE_DIR}/libs/x64linux")
-  set(LIB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/includes/libraries/linux")
-  set(SYSTEM_LIBRARIES pthread)
+  set(SYSTEM_LIB pthread)
 else()
   message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}.")
+
 endif()
 
-file(GLOB LIBRARIES "${LIBRARY_DIR}/*.a")
+file(GLOB LIB_FILES "${LIB_DIR}/*.a")
 include_directories(${LIB_INCLUDE_DIR} ${SRC_INCLUDE_DIR})
 
-file(GLOB SOURCE_FILES src/*.cpp)
+file(GLOB SOURCE_FILES "${SRC_DIR}/*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES} ${SYSTEM_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIB_FILES} ${SYSTEM_LIB})
+target_precompile_headers(${PROJECT_NAME} PRIVATE "${SRC_INCLUDE_DIR}/pch.h")
