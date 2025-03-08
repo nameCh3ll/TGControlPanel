@@ -3,6 +3,9 @@
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#define X11_NO_MANS_DEFINES
+#include <SDL2/SDL_syswm.h>
+#undef BadRequest
 #include <boost/asio/ssl/error.hpp>
 #include <boost/asio/ssl/stream.hpp>
 #include <boost/beast/core.hpp>
@@ -10,7 +13,13 @@
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/container_hash/hash_fwd.hpp>
+#include <chrono>
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
+#include <deque>
+#include <print>
+#include <string>
 #include <tgbot/tgbot.h>
+#include <thread>
+#include <vlc/vlc.h>
