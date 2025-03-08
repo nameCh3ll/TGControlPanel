@@ -1,75 +1,80 @@
 #include "button_function.h"
 #include <functional>
+#include <unordered_map>
 
-using namespace TgBot;
+// УБРАТЬ ХЭШ МАПУ
+
 using namespace std;
+using namespace TgBot;
+using namespace multiMedia;
 
 int main(int argc, char *argv[]) {
-
   signal(SIGINT, signalHandler);
 
 #ifdef _WIN32
   HWND hwnd = GetConsoleWindow();
   ShowWindow(hwnd, SW_HIDE);
 #endif
-
-  cout << "Markers: (II) informational, (WW) warning, (EE) error, (NI) not "
-          "implemented\n\n";
-
-  if (argc < 2) {
-    cerr << "(EE) Enter your Telegram API token\n";
-    return 1;
-  } else if (argc > 2) {
-    cerr << "(EE) Number of arguments is exceeded\n";
-    return 1;
-  } else if (argc == 2) {
-    isTokenValid(argv[1]);
-  }
+  logMessage<LogLevel::Info>("{}\n\n",
+                             "Markers: (II) informational, (WW) warning, (EE) "
+                             "error, (UU) not implemented");
 
   if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-    cerr << "SDL could not initialize!\nSDL_Error: " << SDL_GetError();
+    logMessage<LogLevel::Error>("{}\n{}: {}", "SDL could not initialize",
+                                "SDL_Error", SDL_GetError());
     return 1;
   }
   if (Mix_Init(MIX_INIT_MP3) == 0) {
-    cerr << "SDL_mixer could not initialize!\nSDL_mixer Error: "
-         << Mix_GetError();
+    logMessage<LogLevel::Error>("{}\n{}: {}", "SDL_mixer could not initialize",
+                                "SDL_mixer Error", Mix_GetError());
     SDL_Quit();
     return 1;
   }
   if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) < 0) {
-    cerr << "SDL_mixer could not open audio! SDL_mixer Error: "
-         << Mix_GetError();
+    logMessage<LogLevel::Error>("{}\n{}: {}", "SDL_mixer could not open audio",
+                                "SDL_mixer Error", Mix_GetError());
     Mix_Quit();
     SDL_Quit();
     return 1;
   }
-  const string TELEGRAM_API_TOKEN =
-      "7768261581:AAEOBImqZAUC9gNSucUVNYVy6sSCjYHh_vY";
-  static Bot bot(TELEGRAM_API_TOKEN);
-  static unordered_map<string, function<void(Bot &, CallbackQuery::Ptr &)>>
-      callbackData_funck{
-          {"shutdownButton", shutdownLaptop},
-          {"soundButton", playSound},
-          {"uploadButton", uploadSound},
-      };
+
+  const string API_TOKEN = std::move(getApiToken(argc, argv));
+  if (!isTokenValid(API_TOKEN)) {
+    return 0;
+  }
+
+  static Bot bot(API_TOKEN);
+  clearPendingUpdates(bot);
+
+  static unordered_map<std::string, function<void(Bot &, CallbackQuery::Ptr &)>>
+      callbackData_funck{{"shutdownButton", buttonTG::shutdownLaptopButton},
+                         {"playSoundButton", buttonTG::playSoundButton},
+                         {"playVideoButton", buttonTG::playVideoButton},
+                         {"uploadSoundButton", buttonTG::uploadSoundButton}};
+
   static InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
+
   InlineKeyboardButton::Ptr shutdownButton(new InlineKeyboardButton);
-  InlineKeyboardButton::Ptr soundButton(new InlineKeyboardButton);
-  InlineKeyboardButton::Ptr uploadButton(new InlineKeyboardButton);
+  InlineKeyboardButton::Ptr playSoundButton(new InlineKeyboardButton);
+  InlineKeyboardButton::Ptr playVideoButton(new InlineKeyboardButton);
+  InlineKeyboardButton::Ptr uploadSoundButton(new InlineKeyboardButton);
 
   vector<InlineKeyboardButton::Ptr> row0{shutdownButton};
-  vector<InlineKeyboardButton::Ptr> row1{soundButton};
-  vector<InlineKeyboardButton::Ptr> row2{uploadButton};
+  vector<InlineKeyboardButton::Ptr> row1{playSoundButton};
+  vector<InlineKeyboardButton::Ptr> row2{uploadSoundButton};
+  vector<InlineKeyboardButton::Ptr> row3{playVideoButton};
 
   shutdownButton->callbackData = "shutdownButton";
-  soundButton->callbackData = "soundButton";
-  uploadButton->callbackData = "uploadButton";
+  playSoundButton->callbackData = "playSoundButton";
+  playVideoButton->callbackData = "playVideoButton";
+  uploadSoundButton->callbackData = "uploadSoundButton";
 
   shutdownButton->text = "Shutdown laptop";
-  soundButton->text = "Play sound";
-  uploadButton->text = "Upload sound";
+  playSoundButton->text = "Play sound";
+  playVideoButton->text = "Play video";
+  uploadSoundButton->text = "Upload sound";
 
-  keyboard->inlineKeyboard = {row0, row1, row2};
+  keyboard->inlineKeyboard = {row0, row1, row2, row3};
 
   bot.getEvents().onCommand("start", [](Message::Ptr message) {
     std::string spoilerText = "_Hi_ ||*" + message->from->firstName + "*||";
@@ -80,7 +85,11 @@ int main(int argc, char *argv[]) {
   });
 
   bot.getEvents().onNonCommandMessage([](TgBot::Message::Ptr message) {
-    downloadMp3(std::move(message->text));
+    if (downloadAudioInBuffer(std::move(message->text))) {
+      std::string answerMessage = "Sound is loaded";
+      bot.getApi().sendMessage(message->chat->id, answerMessage, 0, 0, nullptr,
+                               "MarkdownV2");
+    }
   });
 
   bot.getEvents().onCallbackQuery([](CallbackQuery::Ptr query) {
@@ -91,12 +100,12 @@ int main(int argc, char *argv[]) {
     bot.getApi().deleteWebhook();
 
     TgLongPoll longPoll(bot);
-    cout << "--- Bot started ---\n";
+    logMessage<LogLevel::Info>("{}\n", "--- Bot started ---");
     while (true) {
       longPoll.start();
     }
   } catch (exception &e) {
-    printf("error: %s\n", e.what());
+    logMessage<LogLevel::Info>("{}: {}\n", "error", e.what());
   }
 
   Mix_CloseAudio();
