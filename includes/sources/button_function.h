@@ -1,15 +1,19 @@
 #pragma once
 
-#include "utils.h"
+#include "multi_media.h"
 
+namespace buttonTG {
+
+using std::string;
 using TgBot::Bot;
 using TgBot::CallbackQuery;
-using std::string;
 
-void downloadMp3(std::string &&url);
+void shutdownLaptopButton(Bot &bot, CallbackQuery::Ptr &query);
 
-void shutdownLaptop(Bot &bot, CallbackQuery::Ptr &query);
+void uploadSoundButton(Bot &bot, CallbackQuery::Ptr &query);
 
-void uploadSound(Bot &bot, CallbackQuery::Ptr &query);
+void playSoundButton(Bot &bot, CallbackQuery::Ptr &query);
 
-void playSound(Bot &bot, CallbackQuery::Ptr &query);
+void playVideoButton(Bot &bot, CallbackQuery::Ptr &query);
+
+} // namespace buttonTG
