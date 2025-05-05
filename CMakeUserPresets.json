@@ -1,0 +1,20 @@
+{
+    "version": 4,
+    "vendor": {
+        "conan": {}
+    },
+    "include": [
+        "build/Release/generators/CMakePresets.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "get-compile-commands",
+            "inherits": "conan-release",
+            "description": "Release build with compile_commands",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        }
+    ]
+}
